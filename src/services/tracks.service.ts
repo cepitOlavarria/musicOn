@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import Track from 'src/model/track.model';
+import { PlaylistsService } from './playlists.service';
 
 let tracks: Track[] = [
   { id: 14, artist: 'John Lennon', duration: 2.5, title: 'Imagine' },
@@ -10,6 +11,8 @@ let tracks: Track[] = [
 
 @Injectable()
 export class TracksService {
+  constructor() {}
+
   getTracks(): Track[] {
     return tracks;
   }
