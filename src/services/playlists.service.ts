@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import Playlist from 'src/model/playlist.model';
 import Track from 'src/model/track.model';
+import { TracksService } from './tracks.service';
 
 const playlistsMusic: Playlist[] = [
   {
@@ -43,8 +44,27 @@ const playlistsMusic: Playlist[] = [
 
 @Injectable()
 export class PlaylistsService {
-  getPlaylist(): Playlist[] {
-    return playlistsMusic;
+  constructor(private readonly trackService: TracksService) {}
+
+  private existeTrackArtist(tracks: Track[], artist: string): boolean {
+    return (
+      tracks.filter((tr) => {
+        return tr.artist.toUpperCase().includes(artist.toUpperCase());
+      }).length > 0
+    );
+  }
+
+  getPlaylist(artist: string, playlistName: string): Playlist[] {
+    console.log(playlistName);
+    let playToReturn = [...playlistsMusic];
+    playToReturn = playToReturn.filter((pl: Playlist) => {
+      return (
+        (!playlistName ||
+          pl.title.toUpperCase().includes(playlistName.toUpperCase())) &&
+        (!artist || this.existeTrackArtist(pl.tracks, artist))
+      );
+    });
+    return playToReturn;
   }
   getPlaylistById(id: number) {
     return playlistsMusic.find((playlist) => playlist.id == id);
