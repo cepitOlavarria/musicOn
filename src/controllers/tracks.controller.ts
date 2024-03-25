@@ -3,7 +3,9 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Param,
+  ParseIntPipe,
   Post,
   Put,
 } from '@nestjs/common';
@@ -20,8 +22,15 @@ export class TracksController {
   }
 
   @Get('/:id')
-  getTrackByID(@Param() params: any): Track | string {
-    const { id } = params;
+  getTrackByID(
+    @Param(
+      'id',
+      new ParseIntPipe({
+        errorHttpStatusCode: HttpStatus.BAD_REQUEST,
+      }),
+    )
+    id: number,
+  ): Track | string {
     const track = this.trackService.getTrackById(id);
     if (track) {
       return track;
