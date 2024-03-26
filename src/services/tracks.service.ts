@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import Track from 'src/model/track.model';
 import { PlaylistsService } from './playlists.service';
+import Playlist from 'src/model/playlist.model';
 
 let tracks: Track[] = [
   { id: 14, artist: 'John Lennon', duration: 2.5, title: 'Imagine' },
@@ -11,8 +12,13 @@ let tracks: Track[] = [
 
 @Injectable()
 export class TracksService {
+  private plservice?: PlaylistsService;
   constructor() {}
 
+  setPlaylistService(plservice: PlaylistsService) {
+    this.plservice = plservice;
+  }
+  
   getTracks(): Track[] {
     return tracks;
   }
@@ -32,6 +38,15 @@ export class TracksService {
   }
 
   deleteTrack(id: number): void {
+    //validar si existe el track en una playlist
+    const playlists: Playlist[] = this.plservice.getPlaylist(null, null);
+    playlists.forEach((pl: Playlist) => {
+      pl.tracks.forEach((tr: Track) => {
+        if (tr.id == id) {
+          throw new Error('Existente');
+        }
+      });
+    });
     tracks = tracks.filter((tr) => tr.id != id);
   }
 

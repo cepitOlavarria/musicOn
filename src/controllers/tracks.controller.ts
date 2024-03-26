@@ -10,11 +10,13 @@ import {
   Put,
 } from '@nestjs/common';
 import Track from 'src/model/track.model';
+import { PlaylistsService } from 'src/services/playlists.service';
 import { TracksService } from 'src/services/tracks.service';
 
 @Controller('/api/tracks')
 export class TracksController {
-  constructor(private readonly trackService: TracksService) {}
+  constructor(private readonly trackService: TracksService
+    ,private readonly playService: PlaylistsService) {}
 
   @Get()
   getTracks(): Track[] {
