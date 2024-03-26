@@ -11,7 +11,7 @@ const playlistsMusic: Playlist[] = [
     cantCanciones: 10,
     tracks: [
       { id: 1, artist: 'Poul McCarney', duration: 200, title: 'Let it be' },
-      { id: 2, artist: 'Poul McCarney', duration: 200, title: 'Let it be' },
+      { id: 15, artist: 'Poul McCarney', duration: 200, title: 'Let it be' },
       { id: 3, artist: 'Poul McCarney', duration: 200, title: 'Let it be' },
     ],
     estilo: 'rock & roll',
@@ -44,7 +44,9 @@ const playlistsMusic: Playlist[] = [
 
 @Injectable()
 export class PlaylistsService {
-  constructor(private readonly trackService: TracksService) {}
+  constructor(private readonly trackService: TracksService) {
+    trackService.setPlaylistService(this);
+  }
 
   private existeTrackArtist(tracks: Track[], artist: string): boolean {
     return (

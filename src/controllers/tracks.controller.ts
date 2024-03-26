@@ -3,16 +3,20 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Param,
+  ParseIntPipe,
   Post,
   Put,
 } from '@nestjs/common';
 import Track from 'src/model/track.model';
+import { PlaylistsService } from 'src/services/playlists.service';
 import { TracksService } from 'src/services/tracks.service';
 
 @Controller('/api/tracks')
 export class TracksController {
-  constructor(private readonly trackService: TracksService) {}
+  constructor(private readonly trackService: TracksService
+    ,private readonly playService: PlaylistsService) {}
 
   @Get()
   getTracks(): Track[] {
@@ -20,8 +24,15 @@ export class TracksController {
   }
 
   @Get('/:id')
-  getTrackByID(@Param() params: any): Track | string {
-    const { id } = params;
+  getTrackByID(
+    @Param(
+      'id',
+      new ParseIntPipe({
+        errorHttpStatusCode: HttpStatus.BAD_REQUEST,
+      }),
+    )
+    id: number,
+  ): Track | string {
     const track = this.trackService.getTrackById(id);
     if (track) {
       return track;
